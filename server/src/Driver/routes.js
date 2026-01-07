@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 const controller = require("./controller");
+const validate = require("./validation");
+const { validationResult } = require("express-validator");
 
 router.get("/", function (req, res, next) {
   res.send("Driver says Hi");
@@ -18,8 +20,12 @@ router.get("/", function (req, res, next) {
 //     "overtimeRate": Number,
 //     "status":Number
 // }
-router.post("/create", async(req,res) => {
+router.post("/create", validate, async(req,res) => {
   try{
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+        throw error.errors[0].msg;
+    }
     let dbActionFeedback = await controller.create(req.body);
     if(dbActionFeedback.status){
       console.log("Success");
@@ -61,7 +67,7 @@ router.get("/all", async(req,res) => {
   }
 });
 
-router.get("/:id", async(req,res) => {
+router.get("/id/:id", async(req,res) => {
   try{
     let dbActionFeedback = await controller.getByID(req.params.id);
     if(dbActionFeedback.status){
@@ -105,8 +111,12 @@ router.get("/available", async(req,res) => {
   }
 });
 
-router.put("/update/:id", async(req,res) => {
+router.put("/update/:id", validate, async(req,res) => {
   try{
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+        throw error.errors[0].msg;
+    }
     let dbActionFeedback = await controller.updateByID(req.params.id,req.body);
     if(dbActionFeedback.status){
       console.log("Success");
@@ -127,8 +137,12 @@ router.put("/update/:id", async(req,res) => {
   }
 });
 
-router.patch("/status/:id", async(req,res) => {
+router.patch("/status/:id", validate, async(req,res) => {
   try{
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+        throw error.errors[0].msg;
+    }
     let dbActionFeedback = await controller.updateStatus(req.params.id,req.body);
     if(dbActionFeedback.status){
       console.log("Success");

@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 const controller = require("./controller");
+const validate = require("./validation");
+const {validationResult} =require("express-validator");
 
 //JSON
 // {
@@ -19,8 +21,12 @@ router.get("/", function (req, res, next) {
   res.send("Order says Hi");
 });
 
-router.post("/create", async(req,res) => {
+router.post("/create", validate, async(req,res) => {
   try{
+    const error = validationResult(req);
+        if (!error.isEmpty()) {
+            throw error.errors[0].msg;
+        }
     let dbActionFeedback = await controller.create(req.body);
     if(dbActionFeedback.status){
       console.log("Success");
@@ -85,8 +91,12 @@ router.get("/id/:id", async(req,res) => {
   }
 });
 
-router.put("/update/:id", async(req,res) => {
+router.put("/update/:id", validate, async(req,res) => {
   try{
+    const error = validationResult(req);
+        if (!error.isEmpty()) {
+            throw error.errors[0].msg;
+        }
     let dbActionFeedback = await controller.updateByID(req.params.id,req.body);
     if(dbActionFeedback.status){
       console.log("Success");

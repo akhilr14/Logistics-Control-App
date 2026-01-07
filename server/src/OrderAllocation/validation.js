@@ -1,6 +1,6 @@
 const { check } = require("express-validator");
 
-exports.validate = [
+module.exports = [
     check("orderID")
         .trim()
         .not()

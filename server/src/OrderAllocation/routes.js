@@ -2,21 +2,27 @@ var express = require("express");
 var router = express.Router();
 
 const controller = require("./controller");
+const validate = require("./validation");
+const { validationResult } = require("express-validator");
 
 //JSON
 // {
-//     "orderID": "695d1c6777d0c2c7faafc278",
-//     "driverID": "695b8227743ca595581b3351",
-//     "vehicleID": "695d1a9877d0c2c7faafc271",
-//     "estimatedCost": "5200",
-//     "status": 1
+//     "orderID": "objectID",
+//     "driverID": "objectID",
+//     "vehicleID": "objectID",
+//     "estimatedCost": number,
+//     "status": number
 // }
 router.get("/", function (req, res, next) {
   res.send("OrderAllocation says Hi");
 });
 
-router.post("/create", async(req,res) => {
+router.post("/create", validate, async(req,res) => {
   try{
+    const error = validationResult(req);
+    if (!error.isEmpty())
+      throw error.errors[0].msg;
+    
     let dbActionFeedback = await controller.create(req.body);
     if(dbActionFeedback.status){
       console.log("Success");
@@ -103,8 +109,12 @@ router.get("/available", async(req,res) => {
   }
 });
 
-router.put("/update/:id", async(req,res) => {
+router.put("/update/:id", validate, async(req,res) => {
   try{
+    const error = validationResult(req);
+        if (!error.isEmpty()) {
+            throw error.errors[0].msg;
+        }
     let dbActionFeedback = await controller.updateByID(req.params.id,req.body);
     if(dbActionFeedback.status){
       console.log("Success");
@@ -125,8 +135,12 @@ router.put("/update/:id", async(req,res) => {
   }
 });
 
-router.patch("/status/:id", async(req,res) => {
+router.patch("/status/:id", validate, async(req,res) => {
   try{
+    const error = validationResult(req);
+        if (!error.isEmpty()) {
+            throw error.errors[0].msg;
+        }
     let dbActionFeedback = await controller.updateStatus(req.params.id,req.body);
     if(dbActionFeedback.status){
       console.log("Success");

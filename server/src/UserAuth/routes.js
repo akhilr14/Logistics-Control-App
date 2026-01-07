@@ -2,13 +2,28 @@ var express = require("express");
 var router = express.Router();
 
 const controller = require("./controller");
+const validate = require("./validation");
+const { validationResult } = require("express-validator");
+
+//JSON
+// {
+//     firstName: "String",
+//     lastName: "String",
+//     email: "String",
+//     password: "String",
+//     isAdmin: Boolean
+// }
 
 router.get("/", function (req, res, next) {
   res.send("User says Hi");
 });
 
-router.post("/signup", async (req,res) => {
+router.post("/signup", validate, async (req,res) => {
   try{
+    const error = validationResult(req);
+    if (!error.isEmpty())
+      throw error.errors[0].msg;
+
     let dbActionFeedback = await controller.signUp(req.body);
     if(dbActionFeedback.status){
       console.log("Success");
