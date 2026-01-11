@@ -30,7 +30,7 @@ async function getByID(id) {
 
 async function updateByID(id, body) {
     try{
-        const data = await model.findByIdAndUpdate(id, body);
+        const data = await model.findByIdAndUpdate(id, body, {new: true});
         return { status: true, count: data.length, result: data, error: null };
     } catch (err) {
     return { status: false, count: null, result: null, error: err };

@@ -4,7 +4,7 @@ var router = express.Router();
 const controller = require("./controller");
 const validate = require("./validation");
 const { validationResult } = require("express-validator");
-
+const auth = require('../middleware/auth');
 //JSON
 // {
 //     "orderID": "objectID",
@@ -13,11 +13,11 @@ const { validationResult } = require("express-validator");
 //     "estimatedCost": number,
 //     "status": number
 // }
-router.get("/", function (req, res, next) {
+router.get("/", auth, function (req, res, next) {
   res.send("OrderAllocation says Hi");
 });
 
-router.post("/create", validate, async(req,res) => {
+router.post("/create", validate, auth, async(req,res) => {
   try{
     const error = validationResult(req);
     if (!error.isEmpty())
@@ -43,7 +43,7 @@ router.post("/create", validate, async(req,res) => {
   }
 });
 
-router.get("/all", async(req,res) => {
+router.get("/all", auth, async(req,res) => {
   try{
     let dbActionFeedback = await controller.getAll();
     if(dbActionFeedback.status){
@@ -65,7 +65,7 @@ router.get("/all", async(req,res) => {
   }
 });
 
-router.get("/id/:id", async(req,res) => {
+router.get("/id/:id", auth, async(req,res) => {
   try{
     let dbActionFeedback = await controller.getByID(req.params.id);
     if(dbActionFeedback.status){
@@ -87,7 +87,7 @@ router.get("/id/:id", async(req,res) => {
   }
 });
 
-router.get("/available", async(req,res) => {
+router.get("/available", auth, async(req,res) => {
   try{
     let dbActionFeedback = await controller.getAvailable();
     if(dbActionFeedback.status){
@@ -109,7 +109,7 @@ router.get("/available", async(req,res) => {
   }
 });
 
-router.put("/update/:id", validate, async(req,res) => {
+router.put("/update/:id", validate, auth, async(req,res) => {
   try{
     const error = validationResult(req);
         if (!error.isEmpty()) {
@@ -135,7 +135,7 @@ router.put("/update/:id", validate, async(req,res) => {
   }
 });
 
-router.patch("/status/:id", validate, async(req,res) => {
+router.patch("/status/:id", validate, auth, async(req,res) => {
   try{
     const error = validationResult(req);
         if (!error.isEmpty()) {
@@ -161,7 +161,7 @@ router.patch("/status/:id", validate, async(req,res) => {
   }
 });
 
-router.delete("/delete/:id", async (req,res) => {
+router.delete("/delete/:id", auth, async (req,res) => {
   try{
   let dbActionFeedback = await controller.deleteByID(req.params.id);
     if(dbActionFeedback.status){

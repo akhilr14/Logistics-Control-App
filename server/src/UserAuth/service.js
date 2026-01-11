@@ -1,7 +1,9 @@
 const model = require("./model");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('../middleware/config');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 async function signUp(body) {
       const {firstName, lastName, email, password, isAdmin} = body;
@@ -24,7 +26,7 @@ async function signUp(body) {
             }
         };
 
-        const token = jwt.sign(payload, config.jwtSecret, { expiresIn: 3600 });
+        const token = jwt.sign(payload, process.env.jwtSecret, { expiresIn: 3600 });
         return { status: true, count: 1, result: token, error: null };
             
       } catch (err) {
@@ -44,7 +46,7 @@ async function login(body) {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return { status: false, count: 0, result: 'Invalid credentials', error: null };
+            return { status: false, count: 0, result: 'Password is incorrect', error: null };
         }
 
         const payload = {
@@ -54,7 +56,7 @@ async function login(body) {
             }
         };
 
-        const token = jwt.sign(payload, config.jwtSecret, { expiresIn: 3600 });
+        const token = jwt.sign(payload, process.env.jwtSecret, { expiresIn: 3600 });
         return { status: true, count: 1, result: token, error: null };
     } catch (err) {
         console.error(err.message);

@@ -4,7 +4,7 @@ var router = express.Router();
 const controller = require("./controller");
 const validate = require("./validation");
 const {validationResult} =require("express-validator");
-
+const auth = require('../middleware/auth');
 //JSON
 // {
 //     "startLocation": "string",
@@ -17,11 +17,11 @@ const {validationResult} =require("express-validator");
 //     "travelDistance": number,
 //     "Duration":number
 // }
-router.get("/", function (req, res, next) {
+router.get("/", auth, function (req, res, next) {
   res.send("Order says Hi");
 });
 
-router.post("/create", validate, async(req,res) => {
+router.post("/create", validate, auth, async(req,res) => {
   try{
     const error = validationResult(req);
         if (!error.isEmpty()) {
@@ -47,7 +47,7 @@ router.post("/create", validate, async(req,res) => {
   }
 });
 
-router.get("/all", async(req,res) => {
+router.get("/all", auth, async(req,res) => {
   try{
     let dbActionFeedback = await controller.getAll();
     if(dbActionFeedback.status){
@@ -69,7 +69,7 @@ router.get("/all", async(req,res) => {
   }
 });
 
-router.get("/id/:id", async(req,res) => {
+router.get("/id/:id", auth, async(req,res) => {
   try{
     let dbActionFeedback = await controller.getByID(req.params.id);
     if(dbActionFeedback.status){
@@ -91,7 +91,7 @@ router.get("/id/:id", async(req,res) => {
   }
 });
 
-router.put("/update/:id", validate, async(req,res) => {
+router.put("/update/:id", validate, auth, async(req,res) => {
   try{
     const error = validationResult(req);
         if (!error.isEmpty()) {
@@ -117,7 +117,7 @@ router.put("/update/:id", validate, async(req,res) => {
   }
 });
 
-router.get("/date/:startDate", async (req, res) => {
+router.get("/date/:startDate", auth, async (req, res) => {
   try{
     let dbActionFeedback = await controller.getByDate(req.params.startDate);
   if(dbActionFeedback.status){
@@ -139,7 +139,7 @@ router.get("/date/:startDate", async (req, res) => {
   }
 });
 
-router.get("/dateFrame", async (req, res) => {
+router.get("/dateFrame", auth, async (req, res) => {
   try{
     console.log("hi");
     let dbActionFeedback = await controller.getByDateFrame(req.query);

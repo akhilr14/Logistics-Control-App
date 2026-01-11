@@ -4,13 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
-const config = require("./src/middleware/config");
-
-const mongoose = require('mongoose');
-mongoose.connect(config.mongoURI, );
-mongoose.connection.on('connected', () => {
-  console.log("Connected to MongoDB");
-})
 
 const driverRouter = require('./src/Driver/routes');
 const orderRouter = require('./src/Order/routes');
@@ -21,7 +14,11 @@ const vehicleRouter = require('./src/Vehicle/routes');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const connectDB = require("./src/middleware/dbConfig");
+
 var app = express();
+
+connectDB();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

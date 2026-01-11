@@ -12,7 +12,7 @@ async function create(body) {
 
 async function getAll() {
     try{
-        data = await model.find();
+        const data = await model.find();
         return { status: true, count: data.length, result: data, error: null };
     } catch (err) {
     return { status: false, count: null, result: null, error: err };
@@ -21,8 +21,8 @@ async function getAll() {
 
 async function getByID(id) {
     try{
-        data = await model.findById(id);
-        return { status: true, count: data.length, result: data, error: null };
+        const data = await model.findById(id);
+        return { status: true, count: 1, result: data, error: null };
     } catch (err) {
     return { status: false, count: null, result: null, error: err };
   }
@@ -30,8 +30,8 @@ async function getByID(id) {
 
 async function updateByID(id, body) {
     try{
-        data = await model.findByIdAndUpdate(id, body);
-        return { status: true, count: data.length, result: data, error: null };
+        const data = await model.findByIdAndUpdate(id, body, {new: true});
+        return { status: true, count: 1, result: data, error: null };
     } catch (err) {
     return { status: false, count: null, result: null, error: err };
   }
@@ -39,7 +39,7 @@ async function updateByID(id, body) {
 
 async function getAvailable() {
     try{
-        data = await model.find({status: {$eq: 1}});
+        const data = await model.find({status: {$eq: 1}});
         return { status: true, count: data.length, result: data, error: null };
     } catch (err) {
     return { status: false, count: null, result: null, error: err };
@@ -48,8 +48,8 @@ async function getAvailable() {
 
 async function updateStatus(id, body) {
     try{
-        data = await model.findByIdAndUpdate(id, body);
-        return { status: true, count: data.length, result: data, error: null };
+        const data = await model.findByIdAndUpdate(id, body, {new: true});
+        return { status: true, count: 1, result: data, error: null };
     } catch (err) {
     return { status: false, count: null, result: null, error: err };
   }

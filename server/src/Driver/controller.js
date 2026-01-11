@@ -1,6 +1,7 @@
 const service = require("./service");
 
 async function create(body){
+    console.log(body);
     return await service.create(body);
 }
 
